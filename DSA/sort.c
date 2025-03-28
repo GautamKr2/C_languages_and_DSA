@@ -31,6 +31,8 @@ void selection_sort(){
     printf("After selection sort, your array is\n");
     display();
 }
+
+// Bubble Sort
 void bubble_sort(){
     int i, j;
     for(i=0; i<=n-1; i++){
@@ -42,6 +44,9 @@ void bubble_sort(){
     printf("After bubble sort, your array is\n");
     display();
 }
+
+
+// Insertion Sort
 void insertion_sort(){
     int i, j, temp;
     for(i=1; i<n; i++){
@@ -59,7 +64,8 @@ void insertion_sort(){
     printf("After insertion sort, your array is\n");
     display();
 }
-int partition(int lb, int ub){
+
+int partition(int lb, int ub){ // Function for partition of array
     int pivot = Arr[lb];
     int start = lb, end = ub;
     while(start < end){
@@ -83,6 +89,7 @@ void quick_sort(int lb, int ub){
         quick_sort(loc+1, ub);
     }
 }
+
 void merge(int lb, int mid, int ub){
     int i=lb, j=mid+1, k=lb, B[max];
     while(i<=mid && j<=ub){
