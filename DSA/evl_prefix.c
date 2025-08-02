@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<ctype.h>
+#include<math.h> // This is for power function.
 #define max 20
 char Stack[max];
 int top = -1;
@@ -77,7 +78,8 @@ int evl_of_prefix(char Prefix[]){
                 }
                 else{
                     evl_val = op1 / op2;
-                }
+                } break;
+                case '^' : evl_val = pow(op1, op2); break;
             }
             push(evl_val);
         }
@@ -89,10 +91,10 @@ int evl_of_prefix(char Prefix[]){
 int main(){
     char Infix[max], Prefix[max];
     printf("Enter infix expression :\n");
-    gets(Infix);
-    printf("The infix expression is %s\n",Infix);
-    infix_to_prefix(Infix, Prefix);
-    printf("The prefix expressin is %s\n",Prefix);
+    gets(Prefix);
+    // printf("The infix expression is %s\n",Infix);
+    // infix_to_prefix(Infix, Prefix);
+    // printf("The prefix expressin is %s\n",Prefix);
     int result = evl_of_prefix(Prefix);
     printf("Evaluated value of given expression is %d\n",result);
     return 0;
