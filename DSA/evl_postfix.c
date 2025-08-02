@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
+#include<math.h> // This is for power function.
 #define max 20
 char Stack[max];
 int top = -1;
@@ -72,6 +73,7 @@ int Evl_of_postfix(char Postfix[]){
                 else{
                     evl_val = op1 / op2;
                 } break;
+                case '^' : evl_val = pow(op1, op2); break;
                 default : printf("Invalid operator !\n");
             }
             push(evl_val);
@@ -83,10 +85,10 @@ int Evl_of_postfix(char Postfix[]){
 int main(){
     char Infix[max], Postfix[max];
     printf("Enter infix expression :\n");
-    gets(Infix);
-    printf("Your infix expression is : %s\n",Infix);
-    infix_to_postfix(Infix, Postfix);
-    printf("Your postfix expression is : %s\n",Postfix);
+    gets(Postfix);
+    // printf("Your infix expression is : %s\n",Infix);
+    // infix_to_postfix(Infix, Postfix);
+    // printf("Your postfix expression is : %s\n",Postfix);
     int result = Evl_of_postfix(Postfix);
     printf("Evaluated value of given postfix expression is %d\n",result);
     return 0;
