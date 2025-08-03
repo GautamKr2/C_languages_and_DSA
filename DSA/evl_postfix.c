@@ -2,8 +2,8 @@
 #include<ctype.h>
 #include<string.h>
 #include<math.h> // This is for power function.
-#define max 20
-char Stack[max];
+#define max 50
+int Stack[max];
 int top = -1;
 void push(char c){
     Stack[++top] = c;
@@ -59,6 +59,16 @@ int Evl_of_postfix(char Postfix[]){
         if(isdigit(temp)){
             push(temp - '0');
         }
+        // if(isdigit(temp)){
+        //     int x = 0;
+        //     while((temp=Postfix[i]) != ' '){
+        //         x = (x*10) + (temp-'0');
+        //         i++;
+        //     }
+        //     push(x);
+        // }
+        // else if(temp == ' ')
+        //     continue;
         else{
             op2 = pop();
             op1 = pop();
