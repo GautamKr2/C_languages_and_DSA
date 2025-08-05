@@ -56,19 +56,21 @@ int Evl_of_postfix(char Postfix[]){
     char temp;
     while(Postfix[i] != '\0'){
         temp = Postfix[i];
-        if(isdigit(temp)){
-            push(temp - '0');
-        }
         // if(isdigit(temp)){
-        //     int x = 0;
-        //     while((temp=Postfix[i]) != ' '){
-        //         x = (x*10) + (temp-'0');
-        //         i++;
-        //     }
-        //     push(x);
+        //     push(temp - '0');
         // }
-        // else if(temp == ' ')
-        //     continue;
+        if(isdigit(temp)){
+            int x = 0;
+            while((temp=Postfix[i]) != ' '){
+                x = (x*10) + (temp-'0');
+                i++;
+            }
+            push(x);
+        }
+        else if(temp == ' '){
+            i++;
+            continue;
+        }
         else{
             op2 = pop();
             op1 = pop();
@@ -94,7 +96,7 @@ int Evl_of_postfix(char Postfix[]){
 }
 int main(){
     char Infix[max], Postfix[max];
-    printf("Enter infix expression :\n");
+    printf("Enter infix expression(separate operand and operator by a space) :\n");
     gets(Postfix);
     // printf("Your infix expression is : %s\n",Infix);
     // infix_to_postfix(Infix, Postfix);

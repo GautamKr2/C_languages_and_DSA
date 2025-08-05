@@ -1,9 +1,9 @@
 #include<stdio.h>
 #include<string.h>
-#include<ctype.h>
+#include<ctype.h> // This is for isdigit and isalnum function.
 #include<math.h> // This is for power function.
-#define max 20
-char Stack[max];
+#define max 50
+int Stack[max];
 int top = -1;
 void push(char c){
     Stack[++top] = c;
@@ -61,14 +61,28 @@ void infix_to_prefix(char Infix[], char Prefix[]){
 int evl_of_prefix(char Prefix[]){
     strrev(Prefix);
     int evl_val=0, i=0, op1, op2;
+    char temp;
     while(Prefix[i] != '\0'){
-        if(isalnum(Prefix[i])){
-            push(Prefix[i]-'0');
+        temp = Prefix[i];
+        // if(isdigit(temp)){
+        //     push(temp - '0');
+        // }
+        if(isdigit(temp)){
+            int x = 0;
+            while((temp=Prefix[i]) != ' '){
+                x = (x*10) + (temp-'0');
+                i++;
+            }
+            push(x);
+        }
+        else if(temp == ' '){
+            i++;
+            continue;
         }
         else{
             op1 = pop();
             op2 = pop();
-            switch(Prefix[i]){
+            switch(temp){
                 case '+' : evl_val = op1 + op2; break;
                 case '-' : evl_val = op1 - op2; break;
                 case '*' : evl_val = op1 * op2; break;
@@ -79,7 +93,7 @@ int evl_of_prefix(char Prefix[]){
                 else{
                     evl_val = op1 / op2;
                 } break;
-                case '^' : evl_val = pow(op1, op2); break;
+                case '^' : evl_val = pow(op1, op2);
             }
             push(evl_val);
         }
