@@ -72,13 +72,13 @@ int main() {
     printf("\nInOrder of inserted data is -\n");
     inOrder(root);
 
-    printf("\nWhich no you want to delete: ");
+    printf("\n\nWhich no you want to delete: ");
     scanf("%d", &x);
     root = delete(root, x);
     printf("InOrder after deletion -\n");
     inOrder(root);
 
-    printf("\nEnter data: ");
+    printf("\n\nEnter data which you want to add: ");
     scanf("%d", &x);
     root = insert(root, x);
     printf("InOrder after addition -\n");
