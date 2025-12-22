@@ -10,7 +10,7 @@ typedef struct node {
 } Node;
 
 int max(int x, int y) {
-    return (x>y) ? x : y;;
+    return (x>y) ? x : y;
 }
 
 Node* createNode(int data) {
@@ -23,7 +23,7 @@ Node* createNode(int data) {
 
 int getHeight(Node* n) {
     if(n==NULL)
-        return 0;
+        return -1;
     return n->height;
 }
 
@@ -89,7 +89,42 @@ Node* insertNode(Node* r, int data) {
 
     r->height = max(getHeight(r->left), getHeight(r->right)) + 1;
 
+    int bf = getBalanceFactor(r);
+    // Left Left rotation (Right rotate)
+    if(bf>1 && data<r->left->val) {
+        r = rightRotate(r);
+    }
+    // Left Right rotation (Left rotate child then Right rotate parent)
+    if(bf>1 && data>r->left->val) {
+        r->left = leftRotate(r->left);
+        r = rightRotate(r);
+    }
+    // Right Right rotation (Left rotate)
+    if(bf<-1 && data>r->right->val) {
+        r = leftRotate(r);
+    }
+    // Right Left rotation (Right rotate child then Left rotate parent)
+    if(bf<-1 && data<r->right->val) {
+        r->right = rightRotate(r->right);
+        r = leftRotate(r);
+    }
 
+    /*if(bf>1) {
+        if(data < r->left->val) {
+            r = rightRotate(r);
+        } else {
+            r->left = leftRotate(r->left);
+            r = rightRotate(r);
+        }
+    }
+    else if(bf<-1) {
+        if(data > r->right->val) {
+            r = leftRotate(r);
+        } else {
+            r->right = rightRotate(r->right);
+            r = leftRotate(r);
+        }
+    }*/
     return r;
 }
 
@@ -104,9 +139,24 @@ int main() {
         root = insertNode(root, x);
     }
     preOrder(root);
-
-    root = leftRotate(root);
     printf("\n");
-    preOrder(root);
+
+    int ch;
+    while(1) {
+        printf("Enter 1 for insert, 2 for delete, 3 for traverse, 4 for exit: ");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1: printf("Enter data: ");
+                scanf("%d", &x);
+                root = insertNode(root, x);
+                break;
+            // case 2: root = deleteNode(root); break;
+            case 3: preOrder(root); 
+                printf("\n");
+                break;
+            case 4: exit(0);
+            default: printf("Invalid choice ! Please choose again -\n");
+        }
+    }
     return 0;
 }
