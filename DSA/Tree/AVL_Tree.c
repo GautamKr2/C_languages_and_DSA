@@ -9,11 +9,11 @@ typedef struct node {
     int height;
 } Node;
 
-int max(int x, int y) {
-    return (x>y) ? x : y;
+int max(int x, int y) { // To find maximum of two numbers
+    return (x>y) ? x : y; // Ternary operator
 }
 
-Node* createNode(int data) {
+Node* createNode(int data) { // To create a new node
     Node* node = (Node*) malloc(sizeof(Node));
     node->val = data;
     node->left = node->right = NULL;
@@ -21,19 +21,19 @@ Node* createNode(int data) {
     return node;
 }
 
-int getHeight(Node* n) {
+int getHeight(Node* n) { // To find height of the node
     if(n==NULL)
         return -1;
     return n->height;
 }
 
-int getBalanceFactor(Node *n) {
+int getBalanceFactor(Node *n) { // To find balance factor
     if(n==NULL)
         return 0;
     return (getHeight(n->left) - getHeight(n->right));
 }
 
-void preOrder(Node *n) {
+void preOrder(Node *n) { // To traverse tree in prerder
     if(n != NULL) {
         printf("%d %d  ", n->val, n->height);
         preOrder(n->left);
@@ -41,23 +41,23 @@ void preOrder(Node *n) {
     }
 }
 
-Node* rightRotate(Node* B) {
+Node* rightRotate(Node* B) { // Right rotation w.r.t. node
     Node* A = B->left;
     Node* T2 = A->right;
 
     A->right = B;
     B->left = T2;
 
-    if(B->left==NULL && B->right==NULL)
+    if(B->left==NULL && B->right==NULL) // For no any child
         B->height = 0;
-    else
+    else // For child of node
         B->height = max(getHeight(B->left), getHeight(B->right)) + 1;
     A->height = max(getHeight(A->left), getHeight(A->right)) + 1;
 
     return A;
 }
 
-Node* leftRotate(Node* B) {
+Node* leftRotate(Node* B) { // Left rotation w.r.t. node
     Node* C = B->right;
     Node* T3 = C->left;
 
@@ -73,7 +73,7 @@ Node* leftRotate(Node* B) {
     return C;
 }
 
-Node* insertNode(Node* r, int data) {
+Node* insertNode(Node* r, int data) { // To insert node in tree
     if(r==NULL) {
         return createNode(data);
     }
@@ -83,48 +83,32 @@ Node* insertNode(Node* r, int data) {
     else if(data > r->val) {
         r->right = insertNode(r->right, data);
     }
-    else if(data == r->val) {
+    else if(data == r->val) { // Duplicate data can not be inserted
         printf("You have inserted a duplicate data.");
     }
 
     r->height = max(getHeight(r->left), getHeight(r->right)) + 1;
 
-    int bf = getBalanceFactor(r);
-    // Left Left rotation (Right rotate)
-    if(bf>1 && data<r->left->val) {
-        r = rightRotate(r);
-    }
-    // Left Right rotation (Left rotate child then Right rotate parent)
-    if(bf>1 && data>r->left->val) {
-        r->left = leftRotate(r->left);
-        r = rightRotate(r);
-    }
-    // Right Right rotation (Left rotate)
-    if(bf<-1 && data>r->right->val) {
-        r = leftRotate(r);
-    }
-    // Right Left rotation (Right rotate child then Left rotate parent)
-    if(bf<-1 && data<r->right->val) {
-        r->right = rightRotate(r->right);
-        r = leftRotate(r);
-    }
 
-    /*if(bf>1) {
+    // To balance the tree after insertion of node
+    int bf = getBalanceFactor(r);
+
+    if(bf>1) { // Left tree have more node
         if(data < r->left->val) {
-            r = rightRotate(r);
+            r = rightRotate(r); // Left Left rotation(Right rotate)
         } else {
-            r->left = leftRotate(r->left);
-            r = rightRotate(r);
+            r->left = leftRotate(r->left);// Left Right rotation
+            r = rightRotate(r); // (Left rotate child then Right rotate parent)
         }
     }
-    else if(bf<-1) {
+    else if(bf<-1) { // Right tree have more node
         if(data > r->right->val) {
-            r = leftRotate(r);
+            r = leftRotate(r); // Right Right rotation (Left rotate)
         } else {
-            r->right = rightRotate(r->right);
-            r = leftRotate(r);
+            r->right = rightRotate(r->right); // Right Left rotation
+            r = leftRotate(r); // (Right rotate child then Left rotate parent)
         }
-    }*/
+    }
     return r;
 }
 
@@ -142,19 +126,23 @@ int main() {
     printf("\n");
 
     int ch;
-    while(1) {
+    while(1) { // Infinite loop
         printf("Enter 1 for insert, 2 for delete, 3 for traverse, 4 for exit: ");
         scanf("%d", &ch);
         switch(ch) {
-            case 1: printf("Enter data: ");
+            case 1: // For insertion of the node
+                printf("Enter data: ");
                 scanf("%d", &x);
                 root = insertNode(root, x);
                 break;
-            // case 2: root = deleteNode(root); break;
-            case 3: preOrder(root); 
+            // case 2: // To delete the node
+                // root = deleteNode(root);
+                // break;
+            case 3: // To traverse the tree
+                preOrder(root); 
                 printf("\n");
                 break;
-            case 4: exit(0);
+            case 4: exit(0); // Exit from loop and also from program
             default: printf("Invalid choice ! Please choose again -\n");
         }
     }
