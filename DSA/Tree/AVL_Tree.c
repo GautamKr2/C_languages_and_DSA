@@ -48,9 +48,9 @@ Node* rightRotate(Node* B) { // Right rotation w.r.t. node
     A->right = B;
     B->left = T2;
 
-    if(B->left==NULL && B->right==NULL) // For no any child
+    if(B->left==NULL && B->right==NULL) // For without any child
         B->height = 0;
-    else // For child of node
+    else // For with child node
         B->height = max(getHeight(B->left), getHeight(B->right)) + 1;
     A->height = max(getHeight(A->left), getHeight(A->right)) + 1;
 
@@ -87,6 +87,7 @@ Node* insertNode(Node* r, int data) { // To insert node in tree
         printf("You have inserted a duplicate data.");
     }
 
+    // Manage height after insertion
     r->height = max(getHeight(r->left), getHeight(r->right)) + 1;
 
 
@@ -109,6 +110,61 @@ Node* insertNode(Node* r, int data) { // To insert node in tree
             r = leftRotate(r); // (Right rotate child then Left rotate parent)
         }
     }
+    return r;
+}
+
+Node* deleteNode(Node* r, int data) {
+    if(r==NULL) // If data not found or no any data in the tree
+        return r;
+
+    if(data < r->val)
+        r->left = deleteNode(r->left, data);
+    else if(data > r->val)
+        r->right = deleteNode(r->right, data);
+    else { // Data found
+        if(r->left == NULL) { // Also handle node have no any child
+            Node* temp = r->right;
+            free(r);
+            return temp;
+        }
+        else if(r->right == NULL) {
+            Node* temp = r->left;
+            free(r);
+            return temp;
+        }
+        else { // Node have two child
+            Node* temp = r->left; // Replace by inOrder predecer that means delete node
+            while(temp->right != NULL) // Finding predecer
+                temp = temp->right;
+            r->val = temp->val; // Replace value
+            r->left = deleteNode(r->left, r->val); // Now delete predecer node
+        }
+    }
+
+    // Manage height after deletion
+    r->height = max(getHeight(r->left), getHeight(r->right)) + 1;
+
+    // For balancing the tree
+    int bf = getBalanceFactor(r);
+    if(bf > 1) { // Left subtree have more node
+        if(r->left->right==NULL || (r->left->left!=NULL && r->left->right!=NULL)) { // BF(left subtree)>=0
+            r = rightRotate(r);                                         // BF = Balance Factor
+        }
+        else if(r->left->left==NULL) { // BF(left subtree)==-1
+            r->left = leftRotate(r->left);
+            r = rightRotate(r);
+        }
+    }
+    else if(bf < -1) { // Right subtree have more node
+        if(r->right->left==NULL || (r->right->left!=NULL && r->right->right!=NULL)) { // BF(right subtree)<=0
+            r = leftRotate(r);
+        }
+        else if(r->right->right==NULL) { // BF(right subtree)==1
+            r->right = rightRotate(r->right);
+            r = leftRotate(r);
+        }
+    }
+
     return r;
 }
 
@@ -135,9 +191,11 @@ int main() {
                 scanf("%d", &x);
                 root = insertNode(root, x);
                 break;
-            // case 2: // To delete the node
-                // root = deleteNode(root);
-                // break;
+            case 2: // To delete the node
+                printf("Which data you want to delete: ");
+                scanf("%d", &x);
+                root = deleteNode(root, x);
+                break;
             case 3: // To traverse the tree
                 preOrder(root); 
                 printf("\n");
