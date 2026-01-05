@@ -156,11 +156,133 @@ void insertNode(Node **root, int data) { // For inserting of newNode
     fixInsert(root, newNode); // Now sent to fix after inserting
 }
 
-void fixDelete(Node **root, Node *x) {
+void fixDelete(Node **root, Node *x) { // To fix deletion
 
+    while(x!=*root && x->color=='D') { // Fixed or not reached to root
+        Node *p = x->parent;
+        if(x == p->left) { // Left child going to delete
+            Node *s = p->right;
+            if(s->color == 'R') { // Case-1: Sibling is red
+                s->color = p->color; // Swap color of parent and sibling
+                p->color = 'R';
+                leftRotate(root, p); // then rotate in the direction of DB
+            }
+            else { // Sibling color is black
+                if(s->right->color=='B' || s->right==NULL) { // Sibling's far child = black
+                    if(s->left->color=='R') { // Case-2: Sibling black near child red, and far child black
+                        s->left->color = s->color; // Swap color of sibling, and near child
+                        s->color = 'R';
+                        rightRotate(root, s); // then rotate opposite from DB
+                    }
+                    else { // Case-3: Both child of sibling = black
+                        if(p->color=='R') { // Problem give to parent
+                            p->color = 'B';
+                            x->color = 'B';
+                        }
+                        else {
+                            p->color = 'D';
+                            x->color = 'B';
+                            Node *d = x;
+                            x = p;
+                            if(d->val == -1) {
+                                free(d);
+                            }
+                        }
+                        s->color = 'R'; // Sibling becomes red
+                    }
+                }
+                else { // Case-4: Far child of sibling from DB is red
+                    s->color = p->color; // Swap color of sibling, and parent
+                    p->color = 'B';
+                    s->right->color = 'B'; // Give single black to red child(far)
+                    x->color = 'B';
+                    if(x->val == -1) {
+                        free(x);
+                    }
+                    leftRotate(root, p); // Left rotate parent
+                }
+            }
+        }
+        else { // Right child going to delete
+            Node *s = p->left;
+            if(s->color = 'R') { // Case-1: Sibling is red
+                s->color = p->color; // Swap color of parent and sibling
+                p->color = 'R';
+                rightRotate(root, p); // then rotate in the direction of DB
+            }
+            else { // Sibling color is black
+                if(s->left->color=='B' && s->left==NULL) {
+                    if(s->right->color == 'R') { // Case-2: Far child black, near child red
+                        s->right->color = s->color;
+                        s->color = 'R';
+                        leftRotate(root, s);
+                    }
+                    else { // Case-3: Both child black
+                        if(p->color == 'R') {
+                            p->color = 'B';
+                            x->color = 'B';
+                        }
+                        else {
+                            p->color = 'D';
+                            x->color = 'B';
+                            Node *d = x;
+                            x = p;
+                            if(d->val == -1) {
+                                free(d);
+                            }
+                        }
+                        s->color = 'R';
+                    }
+                }
+                else { // Case-4: Far child red
+                    s->color = p->color;
+                    p->color = 'B';
+                    s->left->color = 'B';
+                    x->color = 'B';
+                    if(x->val == -1) {
+                        free(x);
+                    }
+                    rightRotate(root, p);
+                }
+            }
+        }
+    }
+    (*root)->color = 'B';
 }
 void deleteNode(Node **root, int data) {
-
+    Node *temp = *root;
+    while(temp->val != data) { // To find node that is to be delete
+        if(data < temp->val) // If node is in left subtree
+            temp = temp->left;
+        else // If node is in right subtree
+            temp = temp->right;
+    }
+    while(temp->left!=NULL && temp->right!=NULL) { // To go on leaf node
+                    // And checking condition such that temp goes to leaf node
+        if(temp->left==NULL) { // temp have only one child which is right
+            temp->val = temp->right->val;
+            temp = temp->right;
+        }
+        else if(temp->right==NULL) { // temp have only one child which is left
+            temp->val = temp->left->val;
+            temp = temp->left;
+        }
+        else { // temp have both children
+            Node *t = temp->right;
+            while(t->left != NULL) // To find InOrder successor
+                t = t->left;
+            temp->val = t->val;
+            temp = t;
+        }
+    }
+    if(temp->color == 'R') { // Deleting node is red
+        free(temp); // Simply delete it
+    }
+    else { // Deletin gnode ia black
+        temp->val = -1;
+        temp->color = 'D';
+        fixDelete(root, temp);
+    }
 }
 
 int main() {
@@ -188,11 +310,11 @@ int main() {
                 scanf("%d", &x);
                 insertNode(&root, x);
                 break;
-            /*case 2: // Deleting case
+            case 2: // Deleting case
                 printf("Which node you want to delete: ");
                 scanf("%d", &x);
-                root = deleteNode(x);
-                break;*/
+                deleteNode(&root, x);
+                break;
             case 3: // Traversing case
                 preOrder(root);
                 printf("\n");
