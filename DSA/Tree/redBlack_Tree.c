@@ -86,12 +86,12 @@ void fixInsert(Node **root, Node *x) { // To fix insertion(rotation or recolorin
             // Case 2: u is BLACK
             else { // Uncle is black or NULL
                 // LR case
-                if (x == p->right) { //         /
-                    x = p;           /*          \          */
+                if (x == p->right) {
+                    x = p;
                     leftRotate(root, x);
                 }
-                else {               //       /
-                    // LL case       //      /
+                else {
+                    // LL case
                     p->color = 'B'; // First recolor parent, and grandparent
                     g->color = 'R';
                     rightRotate(root, g); // Then rightRotate
@@ -111,12 +111,12 @@ void fixInsert(Node **root, Node *x) { // To fix insertion(rotation or recolorin
             }
             else { // Uncle is black or NULL
                 // RL case
-                if (x == p->left) { //          \ 
-                    x = p;          //          /
+                if (x == p->left) {
+                    x = p;
                     rightRotate(root, x);
                 }
-                else {              //          \ 
-                    // RR case      //           \ 
+                else {
+                    // RR case
                     p->color = 'B'; // First recolor parent, and grandparent
                     g->color = 'R';
                     leftRotate(root, g); // Then left rotate
@@ -139,8 +139,12 @@ void insertNode(Node **root, int data) { // For inserting of newNode
         parent = current;
         if (data < current->val) // in left side
             current = current->left;
-        else // in right side
+        else if(data > current->val) // in right side
             current = current->right;
+        else {
+            printf("You have entered a duplicate node.\n");
+            return;
+        }
     }
 
     newNode->parent = parent; // Set parent of newNode
@@ -315,11 +319,19 @@ int main() {
                 insertNode(&root, x);
                 break;
             case 2: // Deleting case
+                if(root==NULL) {
+                    printf("There is no any node in the tree.\n");
+                    break;
+                }
                 printf("Which node you want to delete: ");
                 scanf("%d", &x);
                 deleteNode(&root, x);
                 break;
             case 3: // Traversing case
+                if(root==NULL) {
+                    printf("There is no any node in the tree.\n");
+                    break;
+                }
                 preOrder(root);
                 printf("\n");
                 break;

@@ -192,11 +192,13 @@ int main() {
                 root = insertNode(root, x);
                 break;
             case 2: // To delete the node
+                if(root==NULL) printf("There is no any node in the tree.");
                 printf("Which data you want to delete: ");
                 scanf("%d", &x);
                 root = deleteNode(root, x);
                 break;
             case 3: // To traverse the tree
+                if(root==NULL) printf("There is no any node in the tree.");
                 preOrder(root); 
                 printf("\n");
                 break;
