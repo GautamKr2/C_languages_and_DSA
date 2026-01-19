@@ -59,7 +59,7 @@ void rightRotate(Node **root, Node *x) {
     x->parent = y;
 }
 
-void fixInsert(Node **root, Node *x) {
+void Splay(Node **root, Node *x) {
     while(x != *root) {
         Node *p = x->parent;
         Node *g = p->parent;
@@ -90,6 +90,24 @@ void fixInsert(Node **root, Node *x) {
     }
 }
 
+void searchNode(Node **root, int data) {
+    Node *temp = *root;
+    while(temp != NULL) {
+        if(data == temp->val) {
+            Splay(root, temp);
+            printf("%d is present in the tree.\n", data);
+            return;
+        }
+        else if(data < temp->val)
+            temp = temp->left;
+        else
+            temp = temp->right;
+    }
+    if(temp == NULL) {
+        printf("%d is not present in the tree.\n", data);
+    }
+}
+
 void insertNode(Node **root, int data) {
     Node *newNode = createNode(data);
     Node *temp = *root;
@@ -115,7 +133,64 @@ void insertNode(Node **root, int data) {
     else
         p->right = newNode;
 
-    fixInsert(root, newNode);
+    Splay(root, newNode);
+}
+
+void deleteNode_Bottom_Up(Node **root, int x) {
+    Node *temp = *root, *p;
+    while(temp != NULL) {
+        if(temp->val == x) {
+            p = temp->parent;
+            break;
+        }
+        else if(x < temp->val)
+            temp = temp->left;
+        else
+            temp = temp->right;
+    }
+    if(temp == NULL) {
+        printf("%d is not present in the tree.\n", x);
+        return;
+    }
+    while(temp->left!=NULL || temp->right!=NULL) {
+        if(temp->left == NULL) {
+            temp->val = temp->right->val;
+            temp = temp->right;
+        }
+        else if(temp->right == NULL) {
+            temp->val = temp->left->val;
+            temp = temp->left;
+        }
+        else {
+            Node *t = temp->right;
+            while(t->left != NULL) {
+                t = t->left;
+            }
+            temp->val = t->val;
+            temp = t;
+        }
+    }
+    if(temp == temp->parent->left) {
+        temp->parent->left = NULL;
+    }
+    else {
+        temp->parent->right = NULL;
+    }
+    free(temp);
+    Splay(root, p);
+}
+
+void deleteNode(Node **root, int x) {
+    int ch;
+    printf("Enter 1 for bottom-up approach, 2 for top-down approach, 0 for exit: ");
+    scanf("%d", &ch);
+    if(ch == 1)
+        deleteNode_Bottom_Up(root, x);
+    else if(ch == 2);
+        // deleteNode_Top_Down(root, x);
+    else if(ch == 0) exit(0);
+    else
+        printf("Invalid input! Please enter a valid input: ");
 }
 
 int main() {
@@ -135,7 +210,7 @@ int main() {
 
     int ch;
     while(1) {
-        printf("Enter 1 for inserting, 2 for deleting, 3 for displaying, 4 for exit: ");
+        printf("Enter 1 for inserting, 2 for deleting, 3 for displaying, 4 for searching, 5 for exit: ");
         scanf("%d", &ch);
         switch(ch) {
             case 1:
@@ -144,15 +219,15 @@ int main() {
                 insertNode(&root, x);
                 break;
             
-            /*case 2:
+            case 2:
                 if(root == NULL) {
                     printf("Tree have no any node.\n");
                     break;
                 }
                 printf("Which node you want to delete: ");
                 scanf("%d", &x);
-                deleteNode(root, x);
-                break;*/
+                deleteNode(&root, x);
+                break;
 
             case 3:
                 if(root == NULL) {
@@ -163,7 +238,17 @@ int main() {
                 printf("\n");
                 break;
 
-            case 4: exit(0);
+            case 4:
+                if(root == NULL) {
+                    printf("Tree have no any node.\n");
+                    break;
+                }
+                printf("Which node you want to search: ");
+                scanf("%d", &x);
+                searchNode(&root, x);
+                break;
+
+            case 5: exit(0);
 
             default: printf("Invalid input!");
         }

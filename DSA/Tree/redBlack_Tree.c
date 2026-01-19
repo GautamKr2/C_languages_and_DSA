@@ -241,11 +241,17 @@ void fixDelete(Node **root, Node *x) { // To fix deletion
 }
 void deleteNode(Node **root, int data) {
     Node *temp = *root;
-    while(temp->val != data) { // To find node that is to be delete
-        if(data < temp->val) // If node is in left subtree
+    while(temp != NULL) { // To find node that is to be delete
+        if(temp->val == data)
+            break;
+        else if(data < temp->val) // If node is in left subtree
             temp = temp->left;
         else // If node is in right subtree
             temp = temp->right;
+    }
+    if(temp == NULL) { // Data not present in the tree
+        printf("%d is not in the tree.\n", data);
+        return;
     }
     while(temp->left!=NULL || temp->right!=NULL) { // To go on leaf node
                     // And checking condition such that temp goes to leaf node
