@@ -180,6 +180,35 @@ void deleteNode_Bottom_Up(Node **root, int x) {
     Splay(root, p);
 }
 
+void deleteNode_Top_Down(Node **root, int x) {
+    Node temp = *root;
+    while(temp->val != x) {
+        if(x < temp->val)
+            temp = temp->left;
+        else if(x > temp->val)
+            temp = temp->right;
+    }
+    if(temp == NULL) {
+        printf("%d is not in the tree.", x);
+        return;
+    }
+    Splay(root, temp);
+    if(temp != *root) {
+        if(*root->left==NULL && *root->right==NULL);
+        else if(*root->left==NULL)
+            *root->right->parent = NULL;
+        else if(*root->right==NULL)
+            *root->left->parent = NULL;
+        else {
+            *root->left->parent = NULL;
+            *root->right->parent = NULL;
+        }
+    }
+    Node *leftSubTree = *root->left;
+    Node *rightSubTree = *root->right;
+    free(*root);
+}
+
 void deleteNode(Node **root, int x) {
     int ch;
     printf("Enter 1 for bottom-up approach, 2 for top-down approach, 0 for exit: ");
