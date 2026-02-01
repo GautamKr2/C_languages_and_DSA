@@ -181,7 +181,7 @@ void deleteNode_Bottom_Up(Node **root, int x) {
 }
 
 void deleteNode_Top_Down(Node **root, int x) {
-    Node temp = *root;
+    Node *temp = *root;
     while(temp->val != x) {
         if(x < temp->val)
             temp = temp->left;
@@ -193,20 +193,31 @@ void deleteNode_Top_Down(Node **root, int x) {
         return;
     }
     Splay(root, temp);
-    if(temp != *root) {
-        if(*root->left==NULL && *root->right==NULL);
-        else if(*root->left==NULL)
-            *root->right->parent = NULL;
-        else if(*root->right==NULL)
-            *root->left->parent = NULL;
-        else {
-            *root->left->parent = NULL;
-            *root->right->parent = NULL;
-        }
+    if((*root)->left==NULL && (*root)->right==NULL){}
+    else if((*root)->left==NULL)
+        (*root)->right->parent = NULL;
+    else if((*root)->right==NULL)
+        (*root)->left->parent = NULL;
+    else {
+        (*root)->left->parent = NULL;
+        (*root)->right->parent = NULL;
     }
-    Node *leftSubTree = *root->left;
-    Node *rightSubTree = *root->right;
+    Node *leftSubTree = (*root)->left;
+    Node *rightSubTree = (*root)->right;
     free(*root);
+    // Find maximum in left subTree
+    temp = leftSubTree;
+    *root = leftSubTree;
+    if(leftSubTree == NULL) {
+        *root = rightSubTree;
+        return;
+    }
+    while(temp->right != NULL)
+        temp = temp->right;
+    Splay(root, temp);
+    (*root)->right = rightSubTree;
+    if(rightSubTree)
+        rightSubTree->parent = *root;
 }
 
 void deleteNode(Node **root, int x) {
@@ -215,11 +226,11 @@ void deleteNode(Node **root, int x) {
     scanf("%d", &ch);
     if(ch == 1)
         deleteNode_Bottom_Up(root, x);
-    else if(ch == 2);
-        // deleteNode_Top_Down(root, x);
+    else if(ch == 2)
+        deleteNode_Top_Down(root, x);
     else if(ch == 0) exit(0);
     else
-        printf("Invalid input! Please enter a valid input: ");
+        printf("Invalid input!\n");
 }
 
 int main() {
@@ -279,7 +290,7 @@ int main() {
 
             case 5: exit(0);
 
-            default: printf("Invalid input!");
+            default: printf("Invalid input!\n");
         }
     }
     return 0;
